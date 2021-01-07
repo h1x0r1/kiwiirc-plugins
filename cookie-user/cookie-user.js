@@ -1,14 +1,15 @@
+var globalUserCookie = null;
+var globalChatCookieName = "cookiename";
+
 function randString(n) {
-    if(!n)
-    {
+    if (!n) {
         n = 5;
     }
 
     var text = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i=0; i < n; i++)
-    {
+    for (var i = 0; i < n; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
@@ -21,8 +22,7 @@ function createCookie(name, value, days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         var expires = "; expires=" + date.toGMTString();
-    }
-    else var expires = "";
+    } else var expires = "";
 
     document.cookie = name + "=" + value + expires + "; path=/";
 }
@@ -42,20 +42,19 @@ function eraseCookie(name) {
     createCookie(name, "", -1);
 }
 
- var cookie = readCookie('cookie_name');
- console.log(cookie);
- if (cookie == null) {
-    var value =  randString(9);
-    createCookie('cookie_name', value, 30);
- }
+globalUserCookie = readCookie(globalChatCookieName);
 
+if (globalUserCookie == null) {
+    var value = randString(9);
+    createCookie(globalChatCookieName, value, 30);
+    globalUserCookie = readCookie(globalChatCookieName);
+}
 
 kiwi.plugin('ident', function(kiwi) {
 
-	kiwi.state.$on('network.new', function(event) {
-		event.network.username = cookie;
+    kiwi.state.$on('network.new', function(event) {
+        event.network.username = globalUserCookie;
 
-	});
+    });
 
 });
-
